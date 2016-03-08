@@ -1,2 +1,2 @@
 # GCM-WTM
-GCM server for WTM-IWD event music app
+A Google Cloud messaging server for WTM-IWD event music app
