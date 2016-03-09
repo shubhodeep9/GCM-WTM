@@ -22,7 +22,7 @@ func receiver(w http.ResponseWriter, r *http.Request) {
     msg := gcm.NewMessage(data, regIDs...)
 
     // Create a Sender to send the message.
-    sender := &gcm.Sender{ApiKey: "AIzaSyDZIaBYzRfULj5V8-QiwqN_z2HL0kPnnAQ"}
+    sender := &gcm.Sender{ApiKey: "AIzaSyAmDb9Gv7rY8dWvEUbwyU0y3hQTz2eoatU"}
 
     // Send the message and receive the response after at most two retries.
     response, err := sender.Send(msg, 2)
