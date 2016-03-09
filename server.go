@@ -10,11 +10,15 @@ import (
 
 func receiver(w http.ResponseWriter, r *http.Request) {
     var message string = ""
+    var regID string = ""
     if len(r.FormValue("message"))!=0 {
         message = r.FormValue("message")
     }
+    if len(r.FormValue("regID"))!=0 {
+        regID = r.FormValue("regID")
+    }
     data := map[string]interface{}{"message": message}
-    regIDs := []string{"4", "8", "15", "16", "23", "42"}
+    regIDs := []string{regID}
     msg := gcm.NewMessage(data, regIDs...)
 
     // Create a Sender to send the message.
