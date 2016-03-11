@@ -8,6 +8,8 @@ import (
     "encoding/json"
     "github.com/astaxie/beego/orm"
     _ "github.com/mattn/go-sqlite3"
+    "os"
+    "io"
 )
 
 func receiver(w http.ResponseWriter, r *http.Request) {
@@ -70,13 +72,34 @@ func register(w http.ResponseWriter, r *http.Request){
     
 }
 
+func upload(w http.ResponseWriter, r *http.Request) {
+    if r.Method == "POST" {
+        r.ParseMultipartForm(32 << 20)
+        file, handler, err := r.FormFile("uploadfile")
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        defer file.Close()
+        fmt.Fprintf(w, "%v", handler.Header)
+        f, err := os.OpenFile("./upload/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        defer f.Close()
+        io.Copy(f, file)
+    }
+}
+
 func main() {
     orm.RegisterDriver("sqlite", orm.DRSqlite)
     orm.RegisterDataBase("default", "sqlite3", "data.db")
     orm.RegisterModel(new(Registrations))
     http.HandleFunc("/send/", receiver)
     http.HandleFunc("/register/", register)
-    err := http.ListenAndServe(":9090", nil) // set listen port
+    http.HandleFunc("/upload/", upload)
+    err := http.ListenAndServe(":9090", http.FileServer(http.Dir("upload/"))) // set listen port
     if err != nil {
         log.Fatal("ListenAndServe: ", err)
     }
